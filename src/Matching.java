@@ -1,7 +1,7 @@
 /***
   Matching Program written
 
-
+	大森夢拓
 
   変数:前に？をつける．  
 
