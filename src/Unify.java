@@ -1,7 +1,5 @@
 /***
-  Unify Program written
-
-	大森夢拓
+  Unify Program writte
 
   変数:前に？をつける．  
 
