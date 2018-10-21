@@ -19,3 +19,33 @@ Jiro is a dog
 dog is a kind of mammal
 Jiro has a hobby of playing frisbee
 Jiro loves Hanako
+
+Jaws is a movie from univarsal studios.
+Jaws is a horror movie.
+Back to the future is a movie from univarsal studios.
+Back to the future is a SF movie.
+Harry Potter is a movie from univarsal studios.
+Harry Potter is a SF movie.
+I like Harry Potter the best out of all the movies from univarsal studios.
+
+The Haunted Mansion is from movie of disney.
+The Haunted Mansion is a horror movie.
+Vingt mille lieues sous les mers is from movie of disney.
+Vingt mille lieues sous les mers is a SF movie.
+Toy Story is a movie from disney.
+Toy Story is a fantasy movie.
+I like Toy Story the best out of all the movies from disney.
+Peter Pan is a movie from disney.
+Peter Pan is a fantasy movie.
+Cinderella is a movie from disney.
+Cinderella is a fantasy movie.
+
+Iron man is a movie from marvel comics.
+Iron man is an action movie.
+I like Iron man the best out of all the movies from marvel comics.
+Captain America is a movie from marvel comics.
+Captain America is an action movie.
+Thor is a movie from marvel comics.
+Thor is an action movie.
+Avengers is a movie from marvel comics.
+Avengers is an action movie.

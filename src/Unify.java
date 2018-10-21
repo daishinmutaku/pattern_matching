@@ -51,37 +51,38 @@ class Unify {
     public static void main(String arg[]) {
 
         readData();
-        // if (arg.length != 2) {
-        // System.out.println("Usgae : % Unify [string1] [string2]");
-        // } else {
-        for (String data : database) {
-            Unifier unifier = new Unifier();
-            if (unifier.unify("?x is a boy", data)) {
-                answers.add(unifier.vars);
+        if (arg.length != 2) {
+            System.out.println("Usgae : % Unify [string1] [string2]");
+        } else {
+            for (String data : database) {
+                Unifier unifier = new Unifier();
+                if (unifier.unify(arg[0], data)) {
+                    answers.add(unifier.vars);
+                }
+                // System.out.println(answers);
             }
-            System.out.println(answers);
-        }
-        System.out.println();
-        List<HashMap<String, String>> ans = new ArrayList<>();
-        for (String data : database) {
-            Unifier unifier = new Unifier();
-            if (unifier.unify("?x loves ?y", data)) {
+            // System.out.println();
+            List<HashMap<String, String>> ans = new ArrayList<>();
+            for (String data : database) {
+                Unifier unifier = new Unifier();
+                if (unifier.unify(arg[1], data)) {
 
-                for (HashMap<String, String> hm : answers) {
-                    for (Map.Entry<String, String> entry : hm.entrySet()) {
-                        String varkey = unifier.vars.get(entry.getKey());
-                        String hmkey = hm.get(entry.getKey());
-                        if (varkey.equals(hmkey)) {
-                            ans.add(unifier.vars);
+                    for (HashMap<String, String> hm : answers) {
+                        for (Map.Entry<String, String> entry : hm.entrySet()) {
+                            String varkey = unifier.vars.get(entry.getKey());
+                            String hmkey = hm.get(entry.getKey());
+                            if (varkey.equals(hmkey)) {
+                                ans.add(unifier.vars);
+                            }
                         }
                     }
                 }
+                // System.out.println(ans);
             }
-            System.out.println(ans);
+            answers.addAll(ans);
+            // System.out.println(answers);
+            printSet();
         }
-        answers.addAll(ans);
-        System.out.println(answers);
-        // }
     }
 
     public static void readData() {
@@ -97,6 +98,37 @@ class Unify {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void printSet() {
+        HashMap<String, List<String>> ansList = new HashMap<>();
+        List<String> setList = new ArrayList<>();
+        for (HashMap<String, String> hashMap : answers) {
+            Set s = hashMap.keySet();
+            List<String> set = new ArrayList<>(s);
+            if (setList.size() == 0) {
+                setList.addAll(set);
+            }
+            for (String strOfSet : set) {
+                if (!setList.contains(strOfSet)) {
+                    setList.add(strOfSet);
+                }
+            }
+        }
+        // System.out.println(setList);
+        for (String str : setList) {
+            ansList.put(str, new ArrayList<>());
+        }
+        for (HashMap<String, String> hashMap : answers) {
+            Set s = hashMap.keySet();
+            List<String> set = new ArrayList<>(s);
+            for (String str : set) {
+                if (!ansList.get(str).contains(hashMap.get(str))) {
+                    ansList.get(str).add(hashMap.get(str));
+                }
+            }
+        }
+        System.out.println(ansList);
     }
 }
 
