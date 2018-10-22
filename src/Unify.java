@@ -115,7 +115,6 @@ class Unify {
                 }
             }
         }
-        // System.out.println(setList);
         for (String str : setList) {
             ansList.put(str, new ArrayList<>());
         }

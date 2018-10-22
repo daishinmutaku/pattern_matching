@@ -1,0 +1,252 @@
+\documentclass[a4j]{jarticle}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{listings,jlisting}
+\usepackage{ascmac}
+\usepackage{amsmath,amssymb}
+
+%ここからソースコードの表示に関する設定
+\lstset{
+  basicstyle={\ttfamily},
+  identifierstyle={\small},
+  commentstyle={\smallitshape},
+  keywordstyle={\small\bfseries},
+  ndkeywordstyle={\small},
+  stringstyle={\small\ttfamily},
+  frame={tb},
+  breaklines=true,
+  columns=[l]{fullflexible},
+  numbers=left,
+  xrightmargin=0zw,
+  xleftmargin=3zw,
+  numberstyle={\scriptsize},
+  stepnumber=1,
+  numbersep=1zw,
+  lineskip=-0.5ex
+}
+%ここまでソースコードの表示に関する設定
+
+\title{知能プログラミング演習II 課題2}
+\author{グループ11\\
+  28114024 大森夢拓\\
+  }
+\date{\today}
+
+\begin{document}
+\maketitle
+\paragraph{提出物} rep2
+\paragraph{グループ} グループ11
+\paragraph{メンバー}
+\begin{tabular}{|c|c|c|}
+  \hline
+  学生番号&氏名&貢献度比率\\
+  \hline\hline
+  28114024&大森夢拓&25\\
+  \hline
+   28114078&高柴慶一朗&25\\
+  \hline
+   28114098&林正紘&25\\
+  \hline
+    28114140&横山健人&25\\
+  \hline
+\end{tabular}
+
+\section{課題の説明}
+\begin{description}
+\item[課題2-1]\item 与えられたパターンにマッチする全データを列挙するプログラムを作成せよ．\\
+\ \ 例えば，この例のような形式のデータセットから，?x has a hobby of playing video-games や Hanako is a ?y のような，様々なパターンにマッチするデータを検索できるようにすること．
+\ \ 複数のパターンが与えられたときに全ての可能な変数束縛の集合を返すようなプログラムを作成せよ．\\
+
+\item[課題2-2] 自分たちの興味ある分野の知識についてデータセットを作り，上記2-1で実装したデータベースに登録せよ．また，検索実行例を示せ．どのような方法でデータセットを登録しても構わない．
+\end{description}
+
+\section{課題2-1}
+\begin{screen}
+MatchingクラスまたはUnifyクラスを用い，パターンで検索可能な簡単なデータベースを作成せよ．
+\end{screen}
+
+\subsection{手法}
+\subsubsection{Unifyクラス}
+データベースのテキストファイルを1行ずつ読み込んで、実行時に与えられた引数2つに当てはまるようにユニフィケーション照合させ、解集合を表示する。
+
+\subsection{実装}
+\subsubsection{Unifyクラス}
+mainメソッド
+\begin{lstlisting}
+public static void main(String arg[]) {
+
+        readData();
+        if (arg.length != 2) {
+            System.out.println("Usgae :  Unify [string1] [string2]");
+        } else {
+            for (String data : database) {
+                Unifier unifier = new Unifier();
+                if (unifier.unify(arg[0], data)) {
+                    answers.add(unifier.vars);
+                }
+                // System.out.println(answers);
+            }
+            // System.out.println();
+            List<HashMap<String, String>> ans = new ArrayList<>();
+            for (String data : database) {
+                Unifier unifier = new Unifier();
+                if (unifier.unify(arg[1], data)) {
+
+                    for (HashMap<String, String> hm : answers) {
+                        for (Map.Entry<String, String> entry : hm.entrySet()) {
+                            String varkey = unifier.vars.get(entry.getKey());
+                            String hmkey = hm.get(entry.getKey());
+                            if (varkey.equals(hmkey)) {
+                                ans.add(unifier.vars);
+                            }
+                        }
+                    }
+                }
+                // System.out.println(ans);
+            }
+            answers.addAll(ans);
+            // System.out.println(answers);
+            printSet();
+        }
+    }\end{lstlisting}
+
+データベースとなるtxtファイルを読み込んでStringのListに変換するメソッド
+\begin{lstlisting}
+public static void readData() {
+               File file = new File("database/data.txt");
+       	        try {
+            Fil	eReader fr = new FileReader(file);
+            Buff	eredReader br = new BufferedReader(fr);
+            String str;
+            while ((str = br.readLine()) != null) {
+                database.add(str);
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+}
+\end{lstlisting}
+ユニフィケーション照合の結果から解集合を表示するメソッド
+\begin{lstlisting}
+public static void printSet() {
+        HashMap<String, List<String>> ansList = new HashMap<>();
+        List<String> setList = new ArrayList<>();
+        for (HashMap<String, String> hashMap : answers) {
+            Set s = hashMap.keySet();
+            List<String> set = new ArrayList<>(s);
+            if (setList.size() == 0) {
+                setList.addAll(set);
+            }
+            for (String strOfSet : set) {
+                if (!setList.contains(strOfSet)) {
+                    setList.add(strOfSet);
+                }
+            }
+        }
+        for (String str : setList) {
+            ansList.put(str, new ArrayList<>());
+        }
+        for (HashMap<String, String> hashMap : answers) {
+            Set s = hashMap.keySet();
+            List<String> set = new ArrayList<>(s);
+            for (String str : set) {
+                if (!ansList.get(str).contains(hashMap.get(str))) {
+                    ansList.get(str).add(hashMap.get(str));
+                }
+            }
+        }
+        System.out.println(ansList);
+    }
+\end{lstlisting}
+
+\subsection{実行例}
+課題2のデータセットのサンプルでの実行例を示す。サンプルのデータベースは以下のようになっていた。
+\begin{lstlisting}
+Hanako is a girl
+Hanako is a student
+student is a kind of human
+human is a kind of mammal
+Hanako has a hobby of playing video-games
+Hanako has a hobby of playing air-guitar
+Hanako studies philosophy
+Hanako loves Taro
+
+Taro is a boy
+Taro is a student
+Taro has a hobby of playing video-games
+Taro studies informatics
+Taro loves Jiro
+Taro has a pet named Jiro
+
+Jiro is a boy
+Jiro is a dog
+dog is a kind of mammal
+Jiro has a hobby of playing frisbee
+Jiro loves Hanako
+
+\end{lstlisting}
+\subsection{考察}
+
+
+\section{課題2-2}
+\begin{screen}
+自分たちの興味ある分野の知識についてデータセットを作り，上記2-1で実装したデータベースに登録せよ．また，検索実行例を示せ．どのような方法でデータセットを登録しても構わない．
+\end{screen}
+
+\subsection{手法}
+例で与えられたデータセットと同じくデータの読み込みがしやすいテキストファイルでデータセットを作成した。私が個人的に好きな映画のタイトルに関する情報を列挙するデータセットを作成した。
+
+\subsection{実装}
+
+\begin{lstlisting}[caption=dataset.txt]
+
+Jaws is a movie from univarsal studios.
+Jaws is a horror movie.
+Back to the future is a movie from univarsal studios.
+Back to the future is a SF movie.
+Harry Potter is a movie from univarsal studios.
+Harry Potter is a SF movie.
+I like Harry Potter the best out of all the movies from univarsal studios.
+The Haunted Mansion is from movie of disney.
+The Haunted Mansion is a horror movie.
+Vingt mille lieues sous les mers is from movie of disney.
+Vingt mille lieues sous les mers is a SF movie.
+Toy Story is a movie from disney.
+Toy Story is a fantasy movie.
+I like Toy Story the best out of all the movies from disney.
+Peter Pan is a movie from disney.
+Peter Pan is a fantasy movie.
+Cinderella is a movie from disney.
+Cinderella is a fantasy movie.
+Iron man is a movie from marvel comics.
+Iron man is an action movie.
+I like Iron man the best out of all the movies from marvel comics.
+Captain America is a movie from marvel comics.
+Captain America is an action movie.
+Thor is a movie from marvel comics.
+Thor is an action movie.
+Avengers is a movie from marvel comics.
+Avengers is an action movie.
+
+\end{lstlisting}
+
+\subsection{実行例}
+以下に実行した例を列挙していく。
+\begin{lstlisting}
+java Unify "?X is a movie from univarsal studios." "?X is a horror ?Y"
+{?X=[Jaws], ?Y=[movie.]}
+\end{lstlisting}
+\subsection{考察}
+
+\section{感想}
+
+% 参考文献
+\begin{thebibliography}{11}
+\bibitem{kijima2012} 新谷虎松: Javaによる知能プログラミング入門, コロナ社, 2014.
+\bibitem{wikipedia} マーベル作品のリストが載っているサイト。\url{https://en.wikipedia.org/wiki/List_of_Marvel_Cinematic_Universe_films}
+\bibitem{mybest} サイトの著者がおすすめする映画のタイトルが載っているサイト。\url{http://makemyself.blog64.fc2.com/blog-entry-132.html}
+\end{thebibliography}
+
+\end{document}
